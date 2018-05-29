@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<!--
+Bindushree Ramakrishna
+Aparna Pattnaik
+Sai Keerthi Tsundupalli
+OMIS 694
+May 10, 2018
+Group Project
+-->
+   <head>
+      <title>Green Electric Effect</title>
+      <meta charset="UTF-8">
+      <script src="myAjaxlib.js"></script>
+      <script>
+         window.onload = function() {
+          ctx = myCanvas.getContext("2d");
+         doAjax("GreenElectricCoSummaryData.txt", "", "graphInfo", "GET", 0);
+         }
+         
+         var ctx;
+         var textlines;
+         var num=10;
+         var clock=0;
+         function displayData(maximum_value) {
+         			
+         			months = new Array("J","F","M","A","M","J","J","A","S","O","N","D");  			
+         			for(var i=0;  i< months.length; i++) {	//taking the values from the array to have Y axis headings
+         				ctx.fillText(months[i], num, ((num*4)*(i+1))+(num*3));//position of the headings		
+         			}
+         			ctx.strokeRect(50, 30, 500, 0);
+         			ctx.strokeRect(50, 530, 500, 0);
+         			ctx.fillText("kWh", 280, 600); //for the kWh text at the bottom
+         			for(i=0; i<=500; i+=100) {
+         				ctx.strokeRect((num*5)+i, 30, 0, 500);
+         			}
+         			for(i = 0; i<=500; i+=100) {			
+         			ctx.fillText(" ", ((num*3.5)+i), 560);//horizontal headings
+         			if(maximum_value < 500)
+         			ctx.fillText(i, ((num*3.5)+i), 560);//horizontal headings
+         			else if(maximum_value < 1000)
+         			ctx.fillText(i*2, ((num*3.5)+i), 560);//horizontal headings
+         			else if(maximum_value < 1500)
+         			ctx.fillText(i*3, ((num*3.5)+i), 560);//horizontal headings
+         			else if(maximum_value < 2500)
+         			ctx.fillText(i*5, ((num*3.5)+i), 560);//horizontal headings
+         			else if(maximum_value<5000)
+         			ctx.fillText(i*10, ((num*3.5)+i), 560);//horizontal headings
+         			else if(maximum_value < 10000)
+         			ctx.fillText(i*20, ((num*3.5)+i), 560);//horizontal headings
+         				
+         			}	
+         		}
+         function graphInfo(returnedXMLdata)//function for taking the readings of graph
+         {
+         
+         fields = returnedXMLdata.split("\n");	
+         
+         
+         document.getElementById("nextCustomer").onclick=function(){//using onclick to get the next customer information 
+         
+         load_graph();
+         
+         };
+         
+         function load_graph(){
+         textlines=returnedXMLdata.split("\n");
+		 
+         if(clock<textlines.length-2)
+         {
+         clock++;
+         }
+         else{
+         clock=1;
+         }
+         
+         fields = returnedXMLdata.split("\n");
+         fields=textlines[clock].split(",");
+		 
+         year=fields[0];
+         customer_name=fields[13];
+         user_array=fields.slice(1,12);
+         var array_numbers=user_array.map(Number);
+         //function for getting maximum number from the array
+         Array.prototype.max = function () {
+         return Math.max.apply(Math, this);
+         };
+         Array.prototype.min = function () {
+         return Math.min.apply(Math, this);
+         };
+         var maximum_value = array_numbers.max();
+		 //alert(maximum_value)
+         var minimum_value = array_numbers.min();
+         ctx.clearRect(0,0,10000,10000);
+         ctx.fillStyle = "#000000"; 
+         			ctx.font = "20px Arial";
+         ctx.fillText(year + " Electricity Usage for " + customer_name, 140, 20);
+         for (i=1; i< 13; i++){	//loop for checking the max value for x-axis reading
+         length = parseInt(fields[i]);
+         if(maximum_value < 500)
+                 ctx.fillRect(50, num+((num*4)*i), length, 20);//checking for the max value for x-axis reading
+         		else if(maximum_value < 1000)
+         		ctx.fillRect(50, num+((num*4)*i), length/2, 20);//maintaining a constant of 20px gap on y axis
+         		else if(maximum_value < 1500)
+         		ctx.fillRect(50, num+((num*4)*i), length/3, 20);
+         		else if(maximum_value < 2500)
+         		ctx.fillRect(50, num+((num*4)*i), length/5, 20);
+         		else if(maximum_value < 5000)
+         		ctx.fillRect(50, num+((num*4)*i), length/10, 20);
+         		else if(maximum_value<10000){//alert(maximum_value)
+         		ctx.fillRect(50, num+((num*4)*i), length/20, 20);}
+         		}
+         		displayData(maximum_value);
+         }
+         
+                   }
+         		
+      </script>
+   </head>
+   <body>
+      <center>
+         <canvas id="myCanvas" width="700" height="700"/>
+      </center>
+      <center>
+         <input id="nextCustomer" type="button" value="Next Customer's info">
+      </center>
+   </body>
+</html>
+
