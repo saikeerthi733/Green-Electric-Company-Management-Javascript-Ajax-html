@@ -1,0 +1,2 @@
+# Green-Electric-Company-Management-Javascript-Ajax-html
+During my coursework we have developed a project using javascript/ajax/html.This project main concept is in order to promote environmental awareness, Green Electric Company is planning on providing an end of year summary of electric usage for its residential customers. Included in this summary will be a chart showing monthly kWh (kilowatt-hour) usage.
